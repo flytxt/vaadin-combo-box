@@ -92,6 +92,9 @@ Custom property | Description | Default
       paper-input-container {
         position: relative;
         padding: 0;
+        --paper-input-container-underline: {
+          @apply(--vaadin-combo-box-icon-underline); 
+        };
       }
 
       paper-icon-button.clear-button,
@@ -108,7 +111,7 @@ Custom property | Description | Default
         padding: 4px;
         text-align: center;
 
-        color: rgba(0, 0, 0, .38);
+        color: var(--vaadin--combo-box-icon-color, rgba(0, 0, 0, .38));
         cursor: pointer;
         margin-top: -1px;
         --paper-icon-button-ink-color: rgba(0, 0, 0, .54);
@@ -117,18 +120,19 @@ Custom property | Description | Default
       paper-input-container paper-icon-button.clear-button,
       paper-input-container ::content paper-icon-button.clear-button {
         right: 28px;
+        @apply(--vaadin-combo-box-clear-button);
       }
 
       paper-input-container paper-icon-button:hover,
       paper-input-container ::content paper-icon-button:hover,
       :host([opened]) paper-input-container paper-icon-button,
       :host([opened]) paper-input-container ::content paper-icon-button {
-        color: rgba(0, 0, 0, .54);
+        color: var(--vaadin--combo-box-hover-disable, rgba(0, 0, 0, .54));
       }
 
       :host([opened]) paper-input-container ::content paper-icon-button:hover,
       :host([opened]) paper-input-container paper-icon-button:hover {
-        color: rgba(0, 0, 0, .86);
+        color: var(--vaadin--combo-box-hover-disable, rgba(0, 0, 0, .86));
       }
 
       :host([opened]) paper-input-container {
@@ -143,6 +147,7 @@ Custom property | Description | Default
       #input {
         box-sizing: border-box;
         padding-right: 28px;
+        color: var(--vaadin--combo-box-notification-panel-color);
       }
 
       :host([has-value]) #input {
@@ -228,7 +233,9 @@ Custom property | Description | Default
         on-down="_onOverlayDown"
         loading="[[loading]]"
         on-mousedown="_preventDefault"
-        vertical-offset="2">
+        vertical-offset="2"
+        list-count="[[ listCount ]]">
+        
     </vaadin-combo-box-overlay>
   </template>
 </dom-module>
@@ -358,7 +365,20 @@ Custom property | Description | Default
         readOnly: true,
         reflectToAttribute: true,
         notify: true
-      }
+      },
+
+      listCount: {
+        type: Object,
+        notify: true
+      },
+
+      invalid: {
+        type: Boolean,
+        value: false,
+        notify: true,
+        observer: '_setErrorMessage'
+      },
+
     },
 
     listeners: {
@@ -406,6 +426,21 @@ Custom property | Description | Default
 
     _onInputContainerFocusedChanged: function(e) {
       this._setFocused(e.detail.value);
+    },
+
+    _setErrorMessage: function(invalid) {
+      if(invalid) {
+        this.errorMessage = this.errorMessages ? this.errorMessages[this._getErrorMessageKey()] : this.errorMessage;
+      }
+    },
+
+    _getErrorMessageKey: function() {
+      var states = this.querySelector('input').validity ;
+      for(var s in states){
+        if (states[s]) {
+          return s;
+        }
+      }
     }
   });
 

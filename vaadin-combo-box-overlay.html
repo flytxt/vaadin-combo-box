@@ -70,9 +70,22 @@
       #selector vaadin-combo-box-item[selected] {
         color: var(--primary-color);
       }
+
+     #messageStyle {
+        color: #171a280;
+        text-align: end;
+        font-style: italic;
+        font-size: 12px;
+        text-overflow: ellipsis
+      }
     </style>
 
     <vaadin-spinner active="[[loading]]"></vaadin-spinner>
+    
+     <template is="dom-if" if="[[ listCount ]]" restamp>
+      <span id="messageStyle">Showing [[ listCount.size  ]] of [[ listCount.totalsize ]] options. Type in to lookup more options.</span>
+     </template>
+     
     <div id="scroller" scroller="[[_getScroller()]]"
         on-tap="_stopPropagation"
         on-touchstart="_onTouchStart"
@@ -95,10 +108,11 @@
               role$="[[_getAriaRole(index)]]"
               aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
               focused="[[_isItemFocused(_focusedIndex,index)]]">
+
           </vaadin-combo-box-item>
         </template>
       </iron-list>
-    </div>
+    </div>  
   </template>
 </dom-module>
 
