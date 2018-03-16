@@ -82,8 +82,8 @@
 
     <vaadin-spinner active="[[loading]]"></vaadin-spinner>
     
-     <template is="dom-if" if="[[ listCount ]]" restamp>
-      <span id="messageStyle">Showing [[ listCount.size  ]] of [[ listCount.totalsize ]] options. Type in to lookup more options.</span>
+     <template is="dom-if" if="[[ listCountLabel ]]" restamp>
+      <span id="messageStyle">[[ listCountLabel ]]</span>
      </template>
      
     <div id="scroller" scroller="[[_getScroller()]]"
